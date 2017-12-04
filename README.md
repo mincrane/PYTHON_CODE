@@ -1,5 +1,5 @@
 # python_analytic_functions
-
+#Mike Min 12/04/2017
 python: 3.6.1
 pandas: 0.20.1
 sklearn: 0.18.1
