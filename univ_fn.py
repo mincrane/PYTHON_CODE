@@ -13,7 +13,15 @@ def var_split(ind_x,perf_y,bin_num,showtb = True):
     
     #bins = algos.quantile(ind_x, quantiles)
     
-    varname = ind_x.name
+    if isinstance(ind_x,np.ndarray):
+        ind_x = pd.Series(ind_x,name= 'Score')
+        varname = ind_x.name
+    else:
+        varname = ind_x.name
+    
+    
+    
+   
     if is_numeric_dtype(ind_x):
         fac=bin_cut(ind_x,bin_num)
     
@@ -24,7 +32,7 @@ def var_split(ind_x,perf_y,bin_num,showtb = True):
             ind_x = ind_x.fillna('missing')
         fac = ind_x
     
-    s=pd.concat([ind_x,perf_y],axis=1)
+    s=pd.concat([ind_x,perf_y],axis=1,ignore_index=True)
     s['bins']=fac
     
     s0=s.groupby(['bins',perf_y]).size().unstack().fillna(0.00001)
@@ -82,14 +90,22 @@ def var_split(ind_x,perf_y,bin_num,showtb = True):
     
    
     ss[['bad_rate','tot_pct','good_pct','bad_pct']]=ss[['bad_rate','tot_pct','good_pct','bad_pct']].apply(lambda x : x.map('{:,.2%}'.format),axis=1)
+    s_out = ss[['N_good','N_bad','Total','bad_rate','tot_pct','good_pct','bad_pct','cum_pct_gd','cum_pct_bd','WOE','bin_iv','KS']]
     
     if showtb:
-        print('KS=',KS)
-        print('IV=',IV)
-        display(ss[['N_good','N_bad','Total','bad_rate','tot_pct','good_pct','bad_pct','cum_pct_gd','cum_pct_bd','WOE','bin_iv','KS']].style.bar(subset=['WOE'], align='mid', color=['#d65f5f', '#5fba7d']))
-    
-    
-    return KS,IV
+       if bin_num > 20:
+          print('KS=',KS)
+          print('IV=',IV)
+          display(s_out.tail(20).style.bar(subset=['WOE'], align='mid', color=['#d65f5f', '#5fba7d']))
+
+       else:
+          print('KS=',KS)
+          print('IV=',IV)
+          display(s_out.style.bar(subset=['WOE'], align='mid', color=['#d65f5f', '#5fba7d']))
+	    
+    		
+    		
+    return KS,IV,s_out
 
 
 def univall(X,perf,bin_num,excelname,showtb=False):
@@ -104,7 +120,7 @@ def univall(X,perf,bin_num,excelname,showtb=False):
     
     ksiv=[]
     for column in X_in:    
-        ks,iv = var_split(X_in[column],perf,bin_num= bin_num,showtb=showtb)
+        ks,iv,t_out = var_split(X_in[column],perf,bin_num= bin_num,showtb=showtb)
         s=[column,ks,iv]
         ksiv.append(s)
     ksiv=pd.DataFrame(ksiv,columns=['Varname','KS','IV'])
