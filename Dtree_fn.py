@@ -108,8 +108,10 @@ def GBtree_(X,y,n_tree=50,learning_rate=0.1, depth = 8,n_split =200,n_leaf = 30,
     plt.axhline(y= bad_rate, color='r', linestyle='-',label='Random')
     plt.title('Precision-Recall Curve: bad_rate={0:0.2f}'.format(bad_rate))
     plt.legend()
+    plt.plot()
     plt.show()
-
+    
+    #pd.tseries.plotting.pylab.show()
     num_bin=10
     
     print('\n')
