@@ -8,7 +8,8 @@ from sklearn.metrics import classification_report,confusion_matrix,roc_auc_score
 
 from IPython.display import display, HTML, Image
 import matplotlib.pyplot as plt 
- 
+%matplotlib inline 
+
 #from sklearn.externals.six import StringIO  
 #from sklearn.tree import export_graphviz
 #import pydotplus
