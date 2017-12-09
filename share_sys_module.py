@@ -4,7 +4,7 @@ import sys
 
 from IPython.display import display, HTML
 pd.set_option('display.width', 1000)
-pd.options.display.float_format = '{:,.2f}'.format
+#pd.options.display.float_format = '{:,.2f}'.format
 import pandas.core.algorithms as algos
 
 
@@ -21,6 +21,12 @@ from pandas.core.dtypes.missing import isnull
 from pandas import (to_timedelta, to_datetime,
                     Categorical, Timestamp, Timedelta,
                     Series, Interval, IntervalIndex)
+
+
+
+from sklearn.metrics import classification_report,confusion_matrix,roc_auc_score, roc_curve,auc ,precision_recall_curve 
+import matplotlib.pyplot as plt
+
 
 
 
