@@ -125,6 +125,7 @@ def univall(X,perf,bin_num,excelname,showtb=False):
         ksiv.append(s)
     ksiv=pd.DataFrame(ksiv,columns=['Varname','KS','IV'])
     
+    
     univ_table = ksiv.merge(s2,left_on='Varname',right_on = 'Varname',how='left', indicator=True).sort_values(by='KS',ascending=False)
     
     univ_table=univ_table[['Varname', 'KS', 'IV', 'count','Missing %','mean', 'std', 'min', '1%', '5%', '25%', '50%', '75%', '95%', '99%', 'max','_merge']]

@@ -98,7 +98,11 @@ def score_dist(datin,bin_num,class_var,perf_var_col,tran_var_col,bps_var_col,oth
     ind_x = df[class_var]                                                             
                                                          
     if is_numeric_dtype(ind_x):
-        fac=bin_cut(ind_x,bin_num)
+        if ind_x.nunique() <= 10:
+            ind_x = ind_x.fillna('missing')
+            fac = ind_x
+        else:
+            fac=bin_cut(ind_x,bin_num)
     
     else:
         if isinstance(ind_x.dtype,CategoricalDtype):
@@ -219,10 +223,10 @@ def score_dist(datin,bin_num,class_var,perf_var_col,tran_var_col,bps_var_col,oth
     if showtb:
     		#print score distribution
         if len(tran_var_col+bps_var_col+other_col) == 0:
-            if bin_num >20:
+            if bin_num >=20:
                 print('KS =',KS)
                 print('IV=',IV)
-                display(t_univ[['Total_Num','good_cnt','Bad_cnt','bad_rate','tot_pct','good_pct','bad_pct','cum_pct_gd','cum_pct_bd','WOE','bin_iv','KS']].tail(11).style.bar(subset=['WOE'], align='mid', color=['#d65f5f', '#5fba7d']))
+                display(t_univ[['Total_Num','good_cnt','Bad_cnt','bad_rate','tot_pct','good_pct','bad_pct','cum_pct_gd','cum_pct_bd','WOE','bin_iv','KS']].tail(20).style.bar(subset=['WOE'], align='mid', color=['#d65f5f', '#5fba7d']))
     
                
             else:
@@ -232,10 +236,10 @@ def score_dist(datin,bin_num,class_var,perf_var_col,tran_var_col,bps_var_col,oth
     
 
         else:
-            if bin_num>20:
+            if bin_num>=20:
                 print('KS =',KS)
                 print('IV=',IV)
-                display(final_table.tail(10).style.applymap(highlight_bps,subset=pd.IndexSlice[:, [col for col in zip(bps_var_col,   ['BPS']*len(bps_var_col))]]))
+                display(final_table.tail(20).style.applymap(highlight_bps,subset=pd.IndexSlice[:, [col for col in zip(bps_var_col,   ['BPS']*len(bps_var_col))]]))
                 
             else :
                 print('KS =',KS)

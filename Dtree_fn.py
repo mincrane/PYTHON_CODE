@@ -1,4 +1,6 @@
 import pandas as pd
+#test
+#master branch
 import numpy as np
 
 from sklearn.model_selection import train_test_split
@@ -25,10 +27,10 @@ sys.path.append("/Users/hemin/AnacondaProjects/Gitfolder/python_analytic_functio
 
 from univ_fn import var_split
 
-def GBtree_(X,y,n_tree=50,learning_rate=0.1, depth = 8,n_split =200,n_leaf = 30,n_var = 0.33,sub_samp=0.8, droplist=[]):
+def GBtree_(X,y,n_tree=50,learning_rate=0.05, depth = 8,n_split =200,n_leaf = 30,n_var = 0.33,sub_samp=0.8,rand_seed = 1116,rand_size = 0.33, droplist=[]):
     
     X.drop(droplist,axis=1,inplace=True)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=32)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=rand_size, random_state=rand_seed)
     
 #     X_train.drop(droplist,axis=1,inplace=True)
 #     X_test.drop(droplist,axis=1,inplace=True)

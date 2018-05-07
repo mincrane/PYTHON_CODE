@@ -15,18 +15,22 @@ def datasum(datin,key):
 
 
 
-def ckdata(datin): 
+def ckdata(datin,showtable ): 
     s1 = datin.describe(percentiles=[.01, .05, .25, .75, .95,.99 ] )
     n = datin.shape[0]
     
     s2=s1.T
     s2['Missing']=(n-s2['count'])/n
+   
+   
     
     
-    #same mean
-    print('Same Mean:')
-    sv = s2[s2['mean'].duplicated(keep=False)]
-    display(sv.sort_values(by=['mean']))
+    #same mean (mean <> 0 )
+   
+    sv = s2[(s2['mean'].duplicated(keep=False)) & (s2['mean'] != 0) ]
+    #sv = s2[s2['mean'].duplicated(keep=False)]
+   
+    
     
     
     sv_drop = s2[s2['mean'].duplicated(keep= 'first')].index.tolist()
@@ -34,14 +38,28 @@ def ckdata(datin):
     #all missing or 0
     am=s2[s2['mean'].isnull()]
     az=s2[s2['mean'] == 0]
-    print('All Missing')
-    display(am)
+    
     am_drop = am.index.tolist()
     
-    print('All Zero:')
-    display(az)
+    
     az_drop = az.index.tolist()
     
-    #display(s2.style.format({'Missing':"{:.2%}"}))
-   
+      
+    print('# of Variables with all values 0: ', len(az_drop) ) 
+    print('# of Variables with same values:', len(sv_drop) )
+    print('# of Variables with all missings:', len(am_drop) )  
+        
+    if showtable == True:
+        display(s2[['count','Missing', 'mean', 'std', 'min', '1%', '5%', '25%', '50%', '75%', '95%', '99%', 'max'] ].style.format({'Missing':"{:.2%}"}))
+        
+    print('Same Mean:')
+    display(sv.sort_values(by=['mean'])) 
+
+
+    print('All Zero:')
+    display(az)
+    
+    print('All Missing')
+    display(am)
+    
     return sv_drop,am_drop,az_drop
