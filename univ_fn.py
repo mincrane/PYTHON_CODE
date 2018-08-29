@@ -4,6 +4,7 @@ from share_sys_module import *
 
 def var_split(ind_x,perf_y,bin_num,showtb = True):
     
+       
     if bin_num<= 0 | isnull(bin_num):
         raise ValueError("Bin_num cannot be zeor or missing")
     
@@ -19,11 +20,13 @@ def var_split(ind_x,perf_y,bin_num,showtb = True):
     else:
         varname = ind_x.name
     
-    
-    
-   
     if is_numeric_dtype(ind_x):
-        fac=bin_cut(ind_x,bin_num)
+        if ind_x.nunique() <= 10:
+            ind_x = ind_x.fillna('Missing')
+            fac = ind_x
+        else:
+            fac=bin_cut(ind_x,bin_num)
+  
     
     else:
         if isinstance(ind_x.dtype,CategoricalDtype):
@@ -42,7 +45,7 @@ def var_split(ind_x,perf_y,bin_num,showtb = True):
     
     s0.rename(columns={0.0:'N_good',1.0:'N_bad'},inplace=True)
     
-    s1 = s0.rename_axis(varname,axis=1,inplace=True)
+    s1 = s0.rename_axis(varname,axis=1)
     
 
     
@@ -80,6 +83,13 @@ def var_split(ind_x,perf_y,bin_num,showtb = True):
     sub_total['Bin_split'] = 'Total'
     
     s1['Bin_split']=s1.index
+    
+    first_bin=s1['Bin_split'].iloc[0]
+    
+    
+    if isinstance(first_bin,Interval):
+        if -999999998 in first_bin:
+            s1['Bin_split'].iloc[0] = 'Missing'
     
     
     ss=s1.append(sub_total,ignore_index=True)
@@ -119,7 +129,8 @@ def univall(X,perf,bin_num,excelname,showtb=False):
     s2['Missing %']=((n-s2['count'])/n).map('{:,.2%}'.format)
     
     ksiv=[]
-    for column in X_in:    
+    for column in X_in: 
+        
         ks,iv,t_out = var_split(X_in[column],perf,bin_num= bin_num,showtb=showtb)
         s=[column,ks,iv]
         ksiv.append(s)
