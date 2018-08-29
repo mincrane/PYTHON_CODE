@@ -52,19 +52,20 @@ def bin_cut(x,bin_num):
     quantiles=[n/bin_num for n in range(0,bin_num+1)]
     #print(quantiles)
     ###bins for interval
-    bin_all = algos.quantile(x, quantiles)
+    bin_all = algos.quantile(x, quantiles).round(4)
+    
     #bins for grouping
     bins = bin_all[1:len(bin_all)]
    
-    bin_all[0]=bin_all[0]-0.001
+    bin_all[0]=(bin_all[0]-0.001).round(4)
     if x.isnull().any():
-        bin_all=np.append(-9999,bin_all)
+        bin_all=np.append(-999999999,bin_all)
     
     uni_bin_all=algos.unique(bin_all)
     uni_bins = algos.unique(bins)
     #print(bins)
     #print(uni_bins)
-    ids=_ensure_int64(uni_bins.searchsorted(x, side='left'))
+    ids=_ensure_int64(uni_bins.searchsorted(x.round(4), side='left'))
     
     if ids[ids==len(uni_bins)].any() | isnull(x).any() :  
         ids=ids+1
