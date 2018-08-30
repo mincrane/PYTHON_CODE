@@ -9,10 +9,11 @@ pandas: 0.20.1
 sklearn: 0.18.1
 
 
-module list
+Module list
 
 #########################
 1.score_dist_fn.py
+Desc: Distribution of Key mertics such as GMV,Claims,Net loss Amt,BPS in terms of score distribution or segmentations 
 
 post analysis
 
