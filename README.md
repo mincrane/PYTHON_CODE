@@ -28,6 +28,7 @@ bin_cut(x,bin_num)
 ##########################
 2.univ_fn.py
 score distribution
+Desc: Univariate Analysis;KS IV Calculation 
 
 var_split(ind_x,perf_y,bin_num,showtb = True)
 ks,iv=univ.var_split(b2c_score['score'],b2c_score['perf_flag'],bin_num= 10)
