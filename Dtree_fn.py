@@ -26,7 +26,7 @@ sys.path.append("/Users/hemin/AnacondaProjects/Gitfolder/python_analytic_functio
 
 from univ_fn import var_split
 
-def GBtree_(X,y,n_tree=50,learning_rate=0.05, depth = 8,n_split =200,n_leaf = 30,n_var = 0.33,sub_samp=0.8,rand_seed = 1116,rand_size = 0.33, droplist=[]):
+def GBtree_(X,y,n_tree=50,learning_rate=0.1, depth = 8,n_split =200,n_leaf = 30,n_var = 0.33,sub_samp=0.8,rand_seed = 1116,rand_size = 0.33, droplist=[]):
     
     X.drop(droplist,axis=1,inplace=True)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=rand_size, random_state=rand_seed)
@@ -51,7 +51,7 @@ def GBtree_(X,y,n_tree=50,learning_rate=0.05, depth = 8,n_split =200,n_leaf = 30
 
     dtree = GradientBoostingClassifier(n_estimators=n_tree,max_depth=depth,min_samples_split=n_split,
                 min_samples_leaf=n_leaf,max_features=n_var,subsample=sub_samp,
-                init=None,learning_rate=0.1 ,random_state=1109                     
+                init=None,learning_rate=learning_rate ,random_state=1109                     
                                       )
     
     dtree.fit(X_train,y_train)
@@ -90,30 +90,73 @@ def GBtree_(X,y,n_tree=50,learning_rate=0.05, depth = 8,n_split =200,n_leaf = 30
     sum_model_stats.loc['% Change']= sum_model_stats.loc['% Change'].apply("{:.2%}".format)
     print(sum_model_stats,'\n')
     
-    #########################
-    ####precision and recall
+    ####################################################
+    ####precision and recall and GINI curve
     
+    #precision and recall
     train_p,train_r,train_t = precision_recall_curve(y_train,p_bad_train)
     test_p,test_r,test_t = precision_recall_curve(y_test,p_bad_test)
     total_p,total_r,total_t = precision_recall_curve(y,p_bad_tot)
-    
+
     bad_rate = np.mean(y)
+
+    #graph gini
     
-    plt.step(train_r, train_p, color='r', alpha=0.9, where='post', label='building')
-    plt.step(test_r, test_p, color='y', alpha=0.9, where='post', label='testing')
-    plt.step(total_r, total_p, color='b', alpha=0.9, where='post', label='total')
-    #plt.plot(r, p, step='post', alpha=0.1, color='y')
+    gini_all_gpc=  t2.good_pct.str.rstrip('%').astype('float') / 100.0
+    gini_all_bpc=  t2.bad_pct.str.rstrip('%').astype('float') / 100.0
+    gini_all = pd.DataFrame({'good_pct':gini_all_gpc,'bad_pct':gini_all_bpc})
+    gini_all[['cum_pct_bad','cum_pct_good']]=gini_all[::-1].cumsum() - 1
+    
+    gini_test_gpc=  t1.good_pct.str.rstrip('%').astype('float') / 100.0
+    gini_test_bpc=  t1.bad_pct.str.rstrip('%').astype('float') / 100.0
+    gini_test = pd.DataFrame({'good_pct':gini_test_gpc,'bad_pct':gini_test_bpc})
+    gini_test[['cum_pct_bad','cum_pct_good']]=gini_test[::-1].cumsum() - 1
+    
+    gini_train_gpc=  t.good_pct.str.rstrip('%').astype('float') / 100.0
+    gini_train_bpc=  t.bad_pct.str.rstrip('%').astype('float') / 100.0
+    gini_train = pd.DataFrame({'good_pct':gini_train_gpc,'bad_pct':gini_train_bpc})
+    gini_train[['cum_pct_bad','cum_pct_good']]=gini_train[::-1].cumsum() - 1
+    
+    
+    
+    plt.figure(figsize=(10, 4))
+   
+    plt.subplot(121)
+    plt.step(train_r, train_p, color='r', alpha=0.9, where='post', label='Train')
+    plt.step(test_r, test_p, color='y', alpha=0.9, where='post', label='Test')
+    plt.step(total_r, total_p, color='b', alpha=0.9, where='post', label='Total')
+
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.ylim([0.0, 1.05])
-    plt.xlim([0.0, 1.0])
+    plt.xlim([0.0, 1.05])
     plt.axhline(y= bad_rate, color='r', linestyle='-',label='Random')
     plt.title('Precision-Recall Curve: bad_rate={0:0.2f}'.format(bad_rate))
     plt.legend()
+   
+
+
+    plt.subplot(122)
+    plt.title('GINI Curve')
+    plt.plot(gini_all.cum_pct_good,gini_all.cum_pct_bad,'b-',label='Total')
+    plt.plot(gini_train.cum_pct_good,gini_train.cum_pct_bad,'r-',label='Train') 
+    plt.plot(gini_test.cum_pct_good,gini_test.cum_pct_bad,'y-',label='Test')
+    
+    plt.plot([0,1], [0,1], 'k--')
+    plt.legend(loc='lower right')
+    plt.xlabel("% Cumulative Good", fontweight='bold')
+    plt.ylabel("% Cumulative Bad", fontweight='bold')
+    plt.xlim([-0.02, 1.02])
+    plt.ylim([-0.02, 1.02])
+    
+    
+    plt.subplots_adjust(top=0.92, bottom=0.08, left=0.10, right=0.95, hspace=0.35, wspace=0.40)
     plt.plot()
     plt.show()
+
+   
+ ################################################   
     
-    #pd.tseries.plotting.pylab.show()
     num_bin=10
     
     print('\n')

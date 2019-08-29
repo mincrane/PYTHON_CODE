@@ -24,12 +24,6 @@ from pandas import (to_timedelta, to_datetime,
 
 
 
-from sklearn.metrics import classification_report,confusion_matrix,roc_auc_score, roc_curve,auc ,precision_recall_curve 
-import matplotlib.pyplot as plt
-
-
-
-
 pd.options.display.max_rows = 500
 pd.options.display.max_columns = 500
 pd.options.display.max_colwidth = 200
@@ -40,7 +34,6 @@ import pandas.core.algorithms as algos
 from pandas.api.types import is_numeric_dtype
 from pandas.api.types import CategoricalDtype
 
-sys.path.append("/Users/hemin/AnacondaProjects/Gitfolder/python_analytic_functions/")
 
-from score_dist_fn import bin_cut
+import matplotlib.pyplot as plt
 
