@@ -11,6 +11,13 @@ sklearn: 0.18.1
 
 Module list
 
+########################
+ScoreRank.py
+
+This object is used to create score cutoffs, score distributions in terms of unit bad
+    and other performance metrics such as Net Loss, Claims etc.. It includes methods to create GINI Curve, Precision/Recall Curve,KS,IV,Univariate Tables and Strategy tables.
+
+
 #########################
 1.score_dist_fn.py
 Desc: Distribution of Key mertics such as GMV,Claims,Net loss Amt,BPS in terms of score distribution or segmentations 
